@@ -30,7 +30,7 @@ public class GameScreen implements Screen {
         state = RUNNING;
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Amatic.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = game.width/8;
+        parameter.size = game.width/12;
         font = generator.generateFont(parameter);
         generator.dispose();
         shapeRenderer = new ShapeRenderer();
@@ -47,14 +47,24 @@ public class GameScreen implements Screen {
         if (Gdx.input.isKeyPressed(Input.Keys.BACK)) {
             state = PAUSED;
         }
-        if(Math.abs(Gdx.input.getAccelerometerX())>1f)
+
+        if(Math.abs(Gdx.input.getAccelerometerX())>3f)
             snake.position.get(0).posY -= Gdx.input.getAccelerometerX() * 100 * dt;
-        else if(Math.abs(Gdx.input.getAccelerometerX())<1f)
+        if(Math.abs(Gdx.input.getAccelerometerX())<-3f)
             snake.position.get(0).posY += Gdx.input.getAccelerometerX() * 100 * dt;
-        if(Math.abs(Gdx.input.getAccelerometerY())>1f)
+        if(Math.abs(Gdx.input.getAccelerometerY())>3f)
             snake.position.get(0).posX += Gdx.input.getAccelerometerY() * 100 * dt;
-        else if (Math.abs(Gdx.input.getAccelerometerY())<1f)
+        if (Math.abs(Gdx.input.getAccelerometerY())<-3f)
             snake.position.get(0).posX -= Gdx.input.getAccelerometerY() * 100 * dt;
+
+        if (snake.position.get(0).posX+snake.position.get(0).width<0)
+            snake.position.get(0).posX = game.width;
+        if (snake.position.get(0).posX>game.width)
+            snake.position.get(0).posX = -snake.position.get(0).width;
+        if(snake.position.get(0).posY+snake.position.get(0).height<0)
+            snake.position.get(0).posY = game.height;
+        if(snake.position.get(0).posY>game.height)
+            snake.position.get(0).posY = -snake.position.get(0).height;
     }
 
     private void updatePaused(){
@@ -79,7 +89,7 @@ public class GameScreen implements Screen {
         game.camera.update();
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(0.780f,0.956f,0.392f,1);
-        shapeRenderer.rect(snake.position.get(0).posX,snake.position.get(0).posY,200,200);
+        shapeRenderer.rect(snake.position.get(0).posX,snake.position.get(0).posY,snake.position.get(0).width,snake.position.get(0).height);
         shapeRenderer.end();
         game.batch.begin();
         font.setColor(0.780f,0.956f,0.392f,1);
@@ -90,7 +100,7 @@ public class GameScreen implements Screen {
                 break;
             case RUNNING:
                 updateRunning(delta);
-                //font.draw(game.batch,"Playing",game.width/2,game.height/2);
+                font.draw(game.batch, Float.toString(Math.abs(Gdx.input.getAccelerometerX())),game.width/2,game.height/2);
                 break;
             case PAUSED:
                 font.draw(game.batch,"Paused",game.width/2,game.height/2);
@@ -126,5 +136,6 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
         font.dispose();
+        shapeRenderer.dispose();
     }
 }

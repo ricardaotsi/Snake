@@ -7,9 +7,13 @@ package com.dream.snake;
 public class SnakeBody {
     public float posX;
     public float posY;
+    public float width;
+    public float height;
 
-    public SnakeBody(float x, float y){
-        posX = x;
-        posY = y;
+    public SnakeBody(float w, float h){
+        posX = w/2;
+        posY = h/2;
+        width = w/25.6f;
+        height = h/14.4f;
     }
 }

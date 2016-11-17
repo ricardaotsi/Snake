@@ -11,6 +11,6 @@ public class Snake {
 
     public Snake(int w, int h){
         position = new ArrayList<SnakeBody>();
-        position.add(new SnakeBody(w/2,h/2));
+        position.add(new SnakeBody(w,h));
     }
 }
