@@ -5,29 +5,42 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 
 /**
  * Created by ti on 16/11/2016.
  */
 
 public class GameScreen implements Screen {
-    private enum gameState{RUNNING, PAUSED, GAMEOVER}
+    static final int READY = 0;
+    static final int RUNNING = 1;
+    static final int PAUSED = 2;
+    static final int GAMEOVER = 3;
 
     private Game game;
-    private gameState state;
+    private int state;
+    private BitmapFont font;
 
     public GameScreen (Game g){
         game = g;
-        state = gameState.RUNNING;
+        state = RUNNING;
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Amatic.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = game.width/8;
+        font = generator.generateFont(parameter);
+        generator.dispose();
         Gdx.input.setInputProcessor(new InputAdapter());
+    }
+
+    private void updateReady(){
+        if (Gdx.input.justTouched())
+            state = RUNNING;
     }
 
     private void updateRunning(){
         if (Gdx.input.isKeyPressed(Input.Keys.BACK)) {
-           /* game.backpressed = true;
-            game.setScreen(new MenuScreen(game));
-            dispose();*/
-            state = gameState.PAUSED;
+            state = PAUSED;
         }
     }
 
@@ -36,7 +49,9 @@ public class GameScreen implements Screen {
     }
 
     private void updateGameOver(){
-
+        game.gameover = true;
+        game.setScreen(new MenuScreen(game));
+        dispose();
     }
 
     @Override
@@ -46,20 +61,29 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        Gdx.gl.glClearColor(0.305f, 0.803f, 0.768f, 0);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        game.camera.update();
+        game.batch.begin();
+        font.setColor(0.780f,0.956f,0.392f,1);
+        font.draw(game.batch,"Playing",200,200);
         switch (state) {
+            case READY:
+                updateReady();
+                font.draw(game.batch,"Press to play",200,200);
+                break;
             case RUNNING:
                 updateRunning();
-                Gdx.gl.glClearColor(0.305f, 0.803f, 0.768f, 0);
-                Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-                game.camera.update();
                 break;
             case PAUSED:
+                font.draw(game.batch,"Paused",200,200);
                 updatePaused();
                 break;
             case GAMEOVER:
                 updateGameOver();
                 break;
         }
+        game.batch.end();
     }
 
     @Override
@@ -69,12 +93,12 @@ public class GameScreen implements Screen {
 
     @Override
     public void pause() {
-        state = gameState.PAUSED;
+        state = PAUSED;
     }
 
     @Override
     public void resume() {
-
+        state = READY;
     }
 
     @Override
@@ -84,6 +108,6 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        font.dispose();
     }
 }
