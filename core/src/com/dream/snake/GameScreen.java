@@ -7,6 +7,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 /**
  * Created by ti on 16/11/2016.
@@ -21,6 +22,8 @@ public class GameScreen implements Screen {
     private Game game;
     private int state;
     private BitmapFont font;
+    private ShapeRenderer shapeRenderer;
+    private Snake snake;
 
     public GameScreen (Game g){
         game = g;
@@ -30,6 +33,8 @@ public class GameScreen implements Screen {
         parameter.size = game.width/8;
         font = generator.generateFont(parameter);
         generator.dispose();
+        shapeRenderer = new ShapeRenderer();
+        snake = new Snake(game.width, game.height);
         Gdx.input.setInputProcessor(new InputAdapter());
     }
 
@@ -64,19 +69,23 @@ public class GameScreen implements Screen {
         Gdx.gl.glClearColor(0.305f, 0.803f, 0.768f, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         game.camera.update();
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(0.780f,0.956f,0.392f,1);
+        shapeRenderer.rect(snake.position.get(0).posX,snake.position.get(0).posY,200,200);
+        shapeRenderer.end();
         game.batch.begin();
         font.setColor(0.780f,0.956f,0.392f,1);
-        font.draw(game.batch,"Playing",200,200);
         switch (state) {
             case READY:
                 updateReady();
-                font.draw(game.batch,"Press to play",200,200);
+                font.draw(game.batch,"Press to play",game.width/2,game.height/2);
                 break;
             case RUNNING:
                 updateRunning();
+                //font.draw(game.batch,"Playing",game.width/2,game.height/2);
                 break;
             case PAUSED:
-                font.draw(game.batch,"Paused",200,200);
+                font.draw(game.batch,"Paused",game.width/2,game.height/2);
                 updatePaused();
                 break;
             case GAMEOVER:
