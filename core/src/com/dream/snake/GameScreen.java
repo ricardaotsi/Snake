@@ -43,10 +43,18 @@ public class GameScreen implements Screen {
             state = RUNNING;
     }
 
-    private void updateRunning(){
+    private void updateRunning(float dt){
         if (Gdx.input.isKeyPressed(Input.Keys.BACK)) {
             state = PAUSED;
         }
+        if(Math.abs(Gdx.input.getAccelerometerX())>1f)
+            snake.position.get(0).posY -= Gdx.input.getAccelerometerX() * 100 * dt;
+        else if(Math.abs(Gdx.input.getAccelerometerX())<1f)
+            snake.position.get(0).posY += Gdx.input.getAccelerometerX() * 100 * dt;
+        if(Math.abs(Gdx.input.getAccelerometerY())>1f)
+            snake.position.get(0).posX += Gdx.input.getAccelerometerY() * 100 * dt;
+        else if (Math.abs(Gdx.input.getAccelerometerY())<1f)
+            snake.position.get(0).posX -= Gdx.input.getAccelerometerY() * 100 * dt;
     }
 
     private void updatePaused(){
@@ -81,7 +89,7 @@ public class GameScreen implements Screen {
                 font.draw(game.batch,"Press to play",game.width/2,game.height/2);
                 break;
             case RUNNING:
-                updateRunning();
+                updateRunning(delta);
                 //font.draw(game.batch,"Playing",game.width/2,game.height/2);
                 break;
             case PAUSED:
