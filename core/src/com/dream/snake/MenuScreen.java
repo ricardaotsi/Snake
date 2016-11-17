@@ -21,7 +21,7 @@ public class MenuScreen implements Screen{
         start = false;
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Amatic.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = game.width/6;
+        parameter.size = game.width/8;
         font = generator.generateFont(parameter);
         generator.dispose();
         glyphLayout = new GlyphLayout();
@@ -49,10 +49,7 @@ public class MenuScreen implements Screen{
 
     private void Update (){
         if (Gdx.input.isKeyPressed(Input.Keys.BACK)){
-            if(!game.backpressed)
-                Gdx.app.exit();
-            else if(game.backpressed)
-                game.backpressed = false;
+            Gdx.app.exit();
         }
     }
 
@@ -68,9 +65,10 @@ public class MenuScreen implements Screen{
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         game.camera.update();
         game.batch.begin();
-        glyphLayout.setText(font,"Start");
-        font.setColor(0.780f,0.956f,0.392f,1);
-        font.draw(game.batch,"Start",game.width/2-glyphLayout.width/2,game.height/2+glyphLayout.height/2);
+        glyphLayout.setText(font,"Press anywhere to start");
+        //font.setColor(0.780f,0.956f,0.392f,1);
+        font.setColor(0.768f,0.301f,0.345f,1);
+        font.draw(game.batch,"Press anywhere to start",game.width/2-glyphLayout.width/2,game.height/2+glyphLayout.height/2);
         game.batch.end();
     }
 
@@ -96,6 +94,6 @@ public class MenuScreen implements Screen{
 
     @Override
     public void dispose() {
-
+        font.dispose();
     }
 }

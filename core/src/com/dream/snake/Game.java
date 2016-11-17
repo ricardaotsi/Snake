@@ -44,6 +44,7 @@ public class Game extends com.badlogic.gdx.Game {
 
 	@Override
 	public void dispose () {
+		batch.dispose();
 		this.getScreen().dispose();
 	}
 }
