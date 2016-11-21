@@ -19,11 +19,19 @@ public class GameScreen implements Screen {
     static final int PAUSED = 2;
     static final int GAMEOVER = 3;
 
+    static final int LEFT = 0;
+    static final int UP = 1;
+    static final int RIGHT = 2;
+    static final int DOWN = 3;
+
     private Game game;
     private int state;
     private BitmapFont font;
     private ShapeRenderer shapeRenderer;
     private Snake snake;
+    private int snakeDirection;
+    private float velocity;
+    private float acceleration;
 
     public GameScreen (Game g){
         game = g;
@@ -35,6 +43,9 @@ public class GameScreen implements Screen {
         generator.dispose();
         shapeRenderer = new ShapeRenderer();
         snake = new Snake(game.width, game.height);
+        snakeDirection = LEFT;
+        velocity = 200;
+        acceleration = 0;
         Gdx.input.setInputProcessor(new InputAdapter());
     }
 
@@ -48,23 +59,24 @@ public class GameScreen implements Screen {
             state = PAUSED;
         }
 
-        if(Math.abs(Gdx.input.getAccelerometerX())>3f)
-            snake.position.get(0).posY -= Gdx.input.getAccelerometerX() * 100 * dt;
-        if(Math.abs(Gdx.input.getAccelerometerX())<-3f)
-            snake.position.get(0).posY += Gdx.input.getAccelerometerX() * 100 * dt;
-        if(Math.abs(Gdx.input.getAccelerometerY())>3f)
-            snake.position.get(0).posX += Gdx.input.getAccelerometerY() * 100 * dt;
-        if (Math.abs(Gdx.input.getAccelerometerY())<-3f)
-            snake.position.get(0).posX -= Gdx.input.getAccelerometerY() * 100 * dt;
+        if(Math.abs(Gdx.input.getAccelerometerX())>5f) {
+            snakeDirection = UP;
+            acceleration = Gdx.input.getAccelerometerX();
+        }
+        if(Math.abs(Gdx.input.getAccelerometerX())<-5f) {
+            snakeDirection = DOWN;
+            acceleration = Gdx.input.getAccelerometerX();
+        }
+        if(Math.abs(Gdx.input.getAccelerometerY())>5f) {
+            snakeDirection = RIGHT;
+            acceleration = Gdx.input.getAccelerometerY();
+        }
+        if (Math.abs(Gdx.input.getAccelerometerY())<-5f) {
+            snakeDirection = LEFT;
+            acceleration = Gdx.input.getAccelerometerY();
+        }
 
-        if (snake.position.get(0).posX+snake.position.get(0).width<0)
-            snake.position.get(0).posX = game.width;
-        if (snake.position.get(0).posX>game.width)
-            snake.position.get(0).posX = -snake.position.get(0).width;
-        if(snake.position.get(0).posY+snake.position.get(0).height<0)
-            snake.position.get(0).posY = game.height;
-        if(snake.position.get(0).posY>game.height)
-            snake.position.get(0).posY = -snake.position.get(0).height;
+        snake.Mover(snakeDirection, acceleration, velocity, dt, game.width, game.height);
     }
 
     private void updatePaused(){
@@ -100,7 +112,6 @@ public class GameScreen implements Screen {
                 break;
             case RUNNING:
                 updateRunning(delta);
-                font.draw(game.batch, Float.toString(Math.abs(Gdx.input.getAccelerometerX())),game.width/2,game.height/2);
                 break;
             case PAUSED:
                 font.draw(game.batch,"Paused",game.width/2,game.height/2);
