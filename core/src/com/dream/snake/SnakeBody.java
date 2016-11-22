@@ -10,7 +10,7 @@ import com.badlogic.gdx.math.Rectangle;
 public class SnakeBody {
     public Rectangle snakeBodypos;
 
-    public SnakeBody(float w, float h){
-        snakeBodypos = new Rectangle(w/2,h/2,w/25,h/14);
+    public SnakeBody(float x, float y){
+        snakeBodypos = new Rectangle(x,y,100,100);
     }
 }

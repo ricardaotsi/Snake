@@ -8,6 +8,12 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector;
+import com.badlogic.gdx.utils.Array;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Created by ti on 16/11/2016.
@@ -25,6 +31,7 @@ public class GameScreen implements Screen {
     static final int DOWN = 3;
 
     private Game game;
+    private Array[][] arena;
     private int state;
     private BitmapFont font;
     private ShapeRenderer shapeRenderer;
@@ -36,6 +43,7 @@ public class GameScreen implements Screen {
 
     public GameScreen (Game g){
         game = g;
+        arena = new Array[14][25];
         state = RUNNING;
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Amatic.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
@@ -43,7 +51,7 @@ public class GameScreen implements Screen {
         font = generator.generateFont(parameter);
         generator.dispose();
         shapeRenderer = new ShapeRenderer();
-        snake = new Snake(game.width, game.height);
+        arena[7][12].add(new Snake(7,12));
         snakeDirection = LEFT;
         velocity = 100;
         acceleration = 0;
@@ -61,27 +69,29 @@ public class GameScreen implements Screen {
             state = PAUSED;
         }
 
-        if(Math.abs(Gdx.input.getAccelerometerX())>3f) {
+        if(Math.abs(Gdx.input.getAccelerometerX())>3f && snakeDirection != DOWN) {
             snakeDirection = UP;
             acceleration = Gdx.input.getAccelerometerX();
         }
-        if(Math.abs(Gdx.input.getAccelerometerX())<-3f) {
+        if(Math.abs(Gdx.input.getAccelerometerX())<-3f && snakeDirection != UP) {
             snakeDirection = DOWN;
             acceleration = Gdx.input.getAccelerometerX();
         }
-        if(Math.abs(Gdx.input.getAccelerometerY())>3f) {
+        if(Math.abs(Gdx.input.getAccelerometerY())>3f && snakeDirection != LEFT) {
             snakeDirection = RIGHT;
             acceleration = Gdx.input.getAccelerometerY();
         }
-        if (Math.abs(Gdx.input.getAccelerometerY())<-3f) {
+        if (Math.abs(Gdx.input.getAccelerometerY())<-3f && snakeDirection != RIGHT) {
             snakeDirection = LEFT;
             acceleration = Gdx.input.getAccelerometerY();
         }
 
         snake.Mover(snakeDirection, acceleration, velocity, dt, game.width, game.height);
 
-        if(snake.position.get(0).snakeBodypos.overlaps(food.foodpos))
+        if(snake.position.get(0).snakeBodypos.overlaps(food.foodpos)) {
             food = new Food(game.width, game.height);
+            snake.addBody();
+        }
     }
 
     private void updatePaused(){
@@ -106,7 +116,17 @@ public class GameScreen implements Screen {
         game.camera.update();
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(0.780f,0.956f,0.392f,1);
-        shapeRenderer.rect(snake.position.get(0).snakeBodypos.x,snake.position.get(0).snakeBodypos.y,snake.position.get(0).snakeBodypos.width,snake.position.get(0).snakeBodypos.height);
+        Iterator iter = snake.position.iterator();
+        int i = 0;
+        while (iter.hasNext()){
+            shapeRenderer.rect(snake.position.get(i).snakeBodypos.x,
+                    snake.position.get(i).snakeBodypos.y,
+                    snake.position.get(i).snakeBodypos.width,
+                    snake.position.get(i).snakeBodypos.height);
+            iter.next();
+            i++;
+
+        }
         shapeRenderer.setColor(1,0,0,0.5f);
         shapeRenderer.rect(food.foodpos.x,food.foodpos.y,food.foodpos.width,food.foodpos.height);
         shapeRenderer.end();
