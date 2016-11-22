@@ -32,6 +32,7 @@ public class GameScreen implements Screen {
     private int snakeDirection;
     private float velocity;
     private float acceleration;
+    private Food food;
 
     public GameScreen (Game g){
         game = g;
@@ -44,8 +45,9 @@ public class GameScreen implements Screen {
         shapeRenderer = new ShapeRenderer();
         snake = new Snake(game.width, game.height);
         snakeDirection = LEFT;
-        velocity = 200;
+        velocity = 100;
         acceleration = 0;
+        food = new Food(game.width, game.height);
         Gdx.input.setInputProcessor(new InputAdapter());
     }
 
@@ -59,24 +61,27 @@ public class GameScreen implements Screen {
             state = PAUSED;
         }
 
-        if(Math.abs(Gdx.input.getAccelerometerX())>5f) {
+        if(Math.abs(Gdx.input.getAccelerometerX())>3f) {
             snakeDirection = UP;
             acceleration = Gdx.input.getAccelerometerX();
         }
-        if(Math.abs(Gdx.input.getAccelerometerX())<-5f) {
+        if(Math.abs(Gdx.input.getAccelerometerX())<-3f) {
             snakeDirection = DOWN;
             acceleration = Gdx.input.getAccelerometerX();
         }
-        if(Math.abs(Gdx.input.getAccelerometerY())>5f) {
+        if(Math.abs(Gdx.input.getAccelerometerY())>3f) {
             snakeDirection = RIGHT;
             acceleration = Gdx.input.getAccelerometerY();
         }
-        if (Math.abs(Gdx.input.getAccelerometerY())<-5f) {
+        if (Math.abs(Gdx.input.getAccelerometerY())<-3f) {
             snakeDirection = LEFT;
             acceleration = Gdx.input.getAccelerometerY();
         }
 
         snake.Mover(snakeDirection, acceleration, velocity, dt, game.width, game.height);
+
+        if(snake.position.get(0).snakeBodypos.overlaps(food.foodpos))
+            food = new Food(game.width, game.height);
     }
 
     private void updatePaused(){
@@ -101,7 +106,9 @@ public class GameScreen implements Screen {
         game.camera.update();
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(0.780f,0.956f,0.392f,1);
-        shapeRenderer.rect(snake.position.get(0).posX,snake.position.get(0).posY,snake.position.get(0).width,snake.position.get(0).height);
+        shapeRenderer.rect(snake.position.get(0).snakeBodypos.x,snake.position.get(0).snakeBodypos.y,snake.position.get(0).snakeBodypos.width,snake.position.get(0).snakeBodypos.height);
+        shapeRenderer.setColor(1,0,0,0.5f);
+        shapeRenderer.rect(food.foodpos.x,food.foodpos.y,food.foodpos.width,food.foodpos.height);
         shapeRenderer.end();
         game.batch.begin();
         font.setColor(0.780f,0.956f,0.392f,1);
@@ -148,5 +155,6 @@ public class GameScreen implements Screen {
     public void dispose() {
         font.dispose();
         shapeRenderer.dispose();
+        snake = null;
     }
 }

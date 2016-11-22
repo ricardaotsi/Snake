@@ -22,26 +22,26 @@ public class Snake {
     public void Mover(int direction, float acc, float vel, float dt, float w, float h) {
         switch (direction){
             case UP:
-                position.get(0).posY -= acc * vel * dt;
+                position.get(0).snakeBodypos.y -= acc * vel * dt;
                 break;
             case DOWN:
-                position.get(0).posY += acc * vel * dt;
+                position.get(0).snakeBodypos.y += acc * vel * dt;
                 break;
             case LEFT:
-                position.get(0).posX -= acc * vel * dt;
+                position.get(0).snakeBodypos.x -= acc * vel * dt;
                 break;
             case RIGHT:
-                position.get(0).posX += acc * vel * dt;
+                position.get(0).snakeBodypos.x += acc * vel * dt;
                 break;
         }
 
-        if (position.get(0).posX+position.get(0).width<0)
-            position.get(0).posX = w;
-        if (position.get(0).posX>w)
-            position.get(0).posX = -position.get(0).width;
-        if(position.get(0).posY+position.get(0).height<0)
-            position.get(0).posY = h;
-        if(position.get(0).posY>h)
-            position.get(0).posY = -position.get(0).height;
+        if (position.get(0).snakeBodypos.x+position.get(0).snakeBodypos.width<0)
+            position.get(0).snakeBodypos.x = w;
+        if (position.get(0).snakeBodypos.x>w)
+            position.get(0).snakeBodypos.x = -position.get(0).snakeBodypos.width;
+        if(position.get(0).snakeBodypos.y+position.get(0).snakeBodypos.height<0)
+            position.get(0).snakeBodypos.y = h;
+        if(position.get(0).snakeBodypos.y>h)
+            position.get(0).snakeBodypos.y = -position.get(0).snakeBodypos.height;
     }
 }

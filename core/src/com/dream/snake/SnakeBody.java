@@ -1,19 +1,16 @@
 package com.dream.snake;
 
+
+import com.badlogic.gdx.math.Rectangle;
+
 /**
  * Created by ti on 17/11/2016.
  */
 
 public class SnakeBody {
-    public float posX;
-    public float posY;
-    public float width;
-    public float height;
+    public Rectangle snakeBodypos;
 
     public SnakeBody(float w, float h){
-        posX = w/2;
-        posY = h/2;
-        width = w/25.6f;
-        height = h/14.4f;
+        snakeBodypos = new Rectangle(w/2,h/2,w/25,h/14);
     }
 }
