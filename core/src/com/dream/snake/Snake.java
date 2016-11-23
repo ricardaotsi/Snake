@@ -62,8 +62,8 @@ public class Snake {
             float xChange = partBefore.snakeBodypos.x - position.get(i).snakeBodypos.x;
             float yChange = partBefore.snakeBodypos.y - position.get(i).snakeBodypos.y;
             float angle = (float)Math.atan2(yChange, xChange);
-            position.get(i).snakeBodypos.x=partBefore.snakeBodypos.x - (float)Math.cos(angle) * 10;
-            position.get(i).snakeBodypos.y = partBefore.snakeBodypos.y - (float)Math.sin(angle) * 10;
+            position.get(i).snakeBodypos.x=partBefore.snakeBodypos.x - (float)Math.cos(angle) * 30;
+            position.get(i).snakeBodypos.y = partBefore.snakeBodypos.y - (float)Math.sin(angle) * 30;
         }
 
 
