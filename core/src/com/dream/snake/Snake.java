@@ -15,6 +15,8 @@ import static com.dream.snake.GameScreen.UP;
 
 public class Snake {
     public LinkedList<SnakeBody> position;
+    private float x;
+    private float y;
 
     public Snake(int x, int y){
         position = new LinkedList<SnakeBody>();
@@ -22,18 +24,27 @@ public class Snake {
     }
 
     public void Mover(int direction, float acc, float vel, float dt, float w, float h) {
+
         switch (direction){
-            case UP:
-                position.get(0).snakeBodypos.y -= acc * vel * dt;
+            case UP:/*
+                x=position.getLast().snakeBodypos.x;
+                y=position.getLast().snakeBodypos.y-100;*/
+                position.getFirst().snakeBodypos.y += acc* vel * dt;
                 break;
             case DOWN:
-                position.get(0).snakeBodypos.y += acc * vel * dt;
+                /*x=position.getLast().snakeBodypos.x;
+                y=position.getLast().snakeBodypos.y+100;*/
+                position.getFirst().snakeBodypos.y -=  acc* vel * dt;
                 break;
             case LEFT:
-                position.get(0).snakeBodypos.x -= acc * vel * dt;
+                /*x=position.getLast().snakeBodypos.x+100;
+                y=position.getLast().snakeBodypos.y;*/
+                position.getFirst().snakeBodypos.x -=  acc * vel * dt;
                 break;
             case RIGHT:
-                position.get(0).snakeBodypos.x += acc * vel * dt;
+                /*x=position.getLast().snakeBodypos.x-100;
+                y=position.getLast().snakeBodypos.y;*/
+                position.getFirst().snakeBodypos.x +=  acc * vel * dt;
                 break;
         }
 
@@ -46,17 +57,20 @@ public class Snake {
         if(position.get(0).snakeBodypos.y>h)
             position.get(0).snakeBodypos.y = -position.get(0).snakeBodypos.height;
 
-        if( position.size()>1) {
-            for(int i=0; i<position.size()-1;i++){
-                position.get(i+1).snakeBodypos.set(position.get(i).snakeBodypos.x,
-                        position.get(i).snakeBodypos.y,
-                        position.get(i).snakeBodypos.width,
-                        position.get(i).snakeBodypos.height);
-            }
+        for (int i=1;i<=position.size()-1;i++){
+            SnakeBody partBefore = position.get(i-1);
+            float xChange = partBefore.snakeBodypos.x - position.get(i).snakeBodypos.x;
+            float yChange = partBefore.snakeBodypos.y - position.get(i).snakeBodypos.y;
+            float angle = (float)Math.atan2(yChange, xChange);
+            position.get(i).snakeBodypos.x=partBefore.snakeBodypos.x - (float)Math.cos(angle) * 10;
+            position.get(i).snakeBodypos.y = partBefore.snakeBodypos.y - (float)Math.sin(angle) * 10;
         }
+
+
+
     }
 
     public void addBody(){
-        position.add(new SnakeBody(position.getLast().snakeBodypos.x,position.getLast().snakeBodypos.y,position.getLast().snakeBodypos.width,position.getLast().snakeBodypos.height));
+        position.add(new SnakeBody(position.getLast().snakeBodypos.x,position.getLast().snakeBodypos.y));
     }
 }
